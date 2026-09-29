@@ -1,0 +1,32 @@
+name: testes
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  testes:
+    runs-on: ${{ matrix.so }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        so: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # O juiz e o System.Numerics.BigInteger da propria maquina: exato e
+      # ilimitado, entao da para comparar milhoes de contas de qualquer tamanho.
+      - name: testes
+        run: dotnet test testes/NumeroGrande.Testes/NumeroGrande.Testes.csproj -c Release --nologo -v q
+
+      # A medida do limite de Karatsuba nao e um teste -- e uma medida. Ela roda
+      # aqui para o numero ficar registrado em cada maquina, e nao para falhar.
+      - name: a medida do limite
+        run: dotnet run --project ferramentas/Medidor/Medidor.csproj -c Release --nologo -- limite
