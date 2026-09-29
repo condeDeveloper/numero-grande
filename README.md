@@ -73,18 +73,29 @@ outra pessoa.**
 Com o valor medido, Karatsuba fica **2,3 vezes** mais rápido que a conta de
 escola em números de 32 mil bits, e 2,6 em 65 mil.
 
-## A medida que eu tirei dos testes
+## As medidas que eu tirei dos testes
 
-A primeira versão tinha um teste comparando o limite medido com o copiado. Ele
-falhava de forma intermitente: sob o executor de testes, com várias classes em
-paralelo, as duas medidas davam **10,0 ms e 9,8 ms** — uma diferença de ruído. A
-mesma comparação, na ferramenta, dá 1,3 ms contra 1,7 ms de forma estável.
+A classe de desempenho começou com quatro testes de tempo e ficou com **nenhum**.
 
-A conclusão não é que a medida estava errada: é que **o lugar dela não é lá**. Um
-teste que falha sem que nada tenha piorado ensina a ignorar testes, que é o pior
-que pode acontecer com uma bateria. Ficaram nos testes só as afirmações de
-**formato** — Karatsuba ganha, dobrar o tamanho não quadruplica o tempo — com
-margens folgadas de propósito.
+O primeiro caiu na minha máquina: ele comparava o limite medido com o copiado, e
+sob o executor de testes, com várias classes em paralelo, as duas medidas davam
+**10,0 ms e 9,8 ms** — uma diferença de ruído. Na ferramenta, a mesma comparação
+dá 1,3 ms contra 1,7 ms, estável.
+
+Os outros três caíram no **CI**, nos três sistemas ao mesmo tempo. Um deles
+afirmava que Karatsuba ganha da conta de escola em quatro mil palavras — o que é
+verdade aqui, com repetições suficientes, e não é verificável numa máquina
+compartilhada com cinco repetições.
+
+A conclusão não é que as medidas estavam erradas: é que **o lugar delas não é
+lá**. Um teste que falha sem que nada tenha piorado ensina a ignorar testes, e
+essa é a pior coisa que pode acontecer com uma bateria.
+
+As medidas vivem na ferramenta, que roda no CI para **registrar** os números de
+cada máquina e nunca falha por causa deles. Nos testes ficaram afirmações de
+correção que não dependem de relógio: que os dois algoritmos concordam em
+números de cem mil bits, que qualquer limite de Karatsuba dá o mesmo resultado, e
+que um número de cem mil dígitos atravessa tudo sem perder um algarismo.
 
 ## As três decisões de projeto
 
